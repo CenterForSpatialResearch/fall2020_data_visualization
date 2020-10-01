@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Page Template</title>
+        <script type="text/javascript" src="../d3.js"></script>
+    </head>
+    <body>
+      Hi
+        <script type="text/javascript">
+            // Your beautiful D3 code will go here
+          var rowConverter = function(d) { //convert to integer
+            return {
+              county: d.Geo_NAME,
+              median_income: parseFloat(d.median_income)
+            };
+          }
+
+          var dataset;
+
+d3.csv("data/density_income_ny_counties.csv", rowConverter) //load csv
+        .then(function(data) {
+          dataset = data;
+          console.log(data)
+       
+        d3.select("body").selectAll("p")
+          .data(dataset)
+          .enter()
+          .append("p")
+          .html(function(d) {
+            return d.county;//CHANGES - HERE I USED COUNTY NOT GEO_NAME BECAUSE COUNTY IS THE KEY WE ASSIGNED IN THE ROW CONVERTER ABOVE. WHEN YOU LOG OUT THE DATA, 
+          })  
+          .style("color", function(d) {
+            if (d.median_income > 65323) {
+              return "red";
+          } else {
+              return "black"
+            }
+
+          });
+
+//CHANGES - I MOVED THE WHOLE BLOCK OF CODE INTO THE DATA LOADING CODE, SO THAT DATASET IS ONLY USED AFTER IT IS FULLY LOADED.
+ })
+		
+        </script>
+    </body>
+</html>
+     

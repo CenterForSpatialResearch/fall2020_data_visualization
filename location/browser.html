@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>test</title>
+        
+        <script src="js/d3.js"></script>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.serialize-object.js"></script>
+        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+        <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+        
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        
+    </head>
+    <body>
+
+    <div id="title">       
+        collecting location data from both your IP and your Browser(wifi signal strength)
+        <br> more accurate, needs permission
+    </div>
+    <div id="location"> </div>
+    <div id="map"> </div>
+       
+       
+       <script type="text/javascript">
+                
+           d3.select("#show").on("click",getLocation())
+           
+           function getLocation() {
+             if (navigator.geolocation) {
+               navigator.geolocation.getCurrentPosition(showPosition);
+            //   navigator.geolocation.watchPosition(showPosition);   
+             } else { 
+               x.innerHTML = "Geolocation is not supported by this browser.";
+             }
+           }
+
+           
+           function showPosition(position){
+             console.log(position)
+             d3.select("#location").html("lat: "+position.coords.latitude+"<br>lng:"+position.coords.longitude)
+           }
+           
+          
+ 
+       </script>      
+    </body>
+</html>
