@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Time axis, prettier</title>
+		<script type="text/javascript" src="../d3.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */
+			body {
+					background-color:#000000;
+					font-family:helvetica;
+					color:#ffffff;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 800;
+			var h = 450;
+			var padding = 40;
+
+			var dataset, xScale, yScale, xAxis, yAxis, cScale;  //Empty, for now
+
+			//Function for converting CSV values from strings to Dates and numbers
+
+			var rowConverter = function(d) {
+				return {
+					Time: parseInt(d.Time),
+					Wechat: parseFloat(d.Wechat),
+					Instagram: parseFloat(d.Instagram),
+					Hupu: parseFloat(d.Hupu),
+					Alipay: parseFloat(d.Alipay),
+					Hour: parseFloat(d.Hour)
+				/*		Time3: parseInt(d.Time3),
+					Amount3: parseFloat(d.Amount3)
+					Time4: parseInt(d.Time4),
+					Amount4: parseFloat(d.Amount4) */
+				};
+			}
+
+			//Load in the data
+			d3.csv("data02.csv", rowConverter)
+            .then(function(data) {
+
+				//Copy data into global dataset
+				dataset = data;
+
+				//Create scale functions
+				xScale = d3.scaleLinear()
+							   .domain([
+									 0,  //Because I want a zero baseline
+ 									d3.max(dataset, function(d) {
+												return d.Hour;
+										})
+								])
+							   .range([padding, w - padding]);
+
+				yScale = d3.scaleLinear()
+							   .domain([
+									0,  //Because I want a zero baseline
+									d3.max(dataset, function(d) {
+											return d.Wechat + d.Hupu + d.Instagram + d.Alipay;
+										 })
+								])
+							   .range([h - padding, padding]);
+
+				//Define X axis
+				xAxis = d3.axisBottom()
+								  .scale(xScale)
+								  .ticks(24);//change ticks
+								 // .tickFormat(formatTime);
+
+				//Define Y axis
+				yAxis = d3.axisLeft()
+								  .scale(yScale)
+								  .ticks(10);
+
+				//Create SVG element
+				var svg = d3.select("body")
+							.append("svg")
+							.attr("width", w)
+							.attr("height", h);
+
+							//Generate guide lines
+		/*						svg.selectAll("line")
+							   .data(dataset)
+							   .enter()
+							   .append("line")
+							   .attr("x1", function(d) {
+								if(d.Time<25 && d.Time>0){
+									return xScale(d.Time);
+								}
+							   })
+							   .attr("x2", function(d) {
+									 if(d.Time<25 && d.Time>0){
+										 return xScale(d.Time);
+									 }
+							   })
+							   .attr("y1", h - padding)
+							   .attr("y2", padding)
+			           .attr("stroke","white")
+			           .attr("stroke-width", 0.5);     */
+
+					 var showAmount = function(){
+						svg.selectAll("rect")
+						.append("title")
+						.attr("id","tooltip")
+						.text(function(d){
+							if(d.Time<25){
+								return d.Hour-1+":00~"+d.Hour+":00 :  "+d.Wechat+" minute(s) on WeChat";
+							} else if(d.Time<49){
+								return d.Hour-1+":00~"+d.Hour+":00 :  "+d.Instagram+" minute(s) on Instagram";
+							}else if(d.Time<73){
+								return d.Hour-1+":00~"+d.Hour+":00 :  "+d.Hupu+" minute(s) on HUPU";
+							}else {
+								return d.Hour-1+":00~"+d.Hour+":00 :  "+d.Alipay+" minute(s) on Alipay";
+							}
+						})
+					}
+
+				//Generate circles last, so they appear in front
+				svg.selectAll("rect")
+				   .data(dataset)
+				   .enter()
+				   .append("rect")
+				   .attr("x", function(d) {
+							 return xScale(d.Hour-1);
+					 })
+				   .attr("y", function(d) {
+						 if(d.Time<25){
+							 	return yScale(d.Wechat);
+							}else if (d.Time<49){
+ 							 	return yScale(d.Wechat+d.Instagram);
+ 							}else if (d.Time<73){
+ 							 	return yScale(d.Wechat+d.Instagram+d.Hupu);
+ 							}else {
+ 							 	return yScale(d.Wechat+d.Instagram+d.Hupu+d.Alipay);
+ 							}
+								//return yScale(d.Amount);
+				/*		 }else if(d.Time<49){
+							 return yScale(d.Amount);
+						 }  */
+
+				   })
+				   .attr("height", function(d) {
+						 if(d.Time<25){
+					     return h-padding-yScale(d.Wechat);
+					//		 return Math.max(20*d.Amount,2.5);
+						 }else if (d.Time<49){
+							 return -yScale(d.Wechat+d.Instagram)+yScale(d.Wechat);
+						 }else if (d.Time<73){
+							 return -yScale(d.Wechat+d.Instagram+d.Hupu)+yScale(d.Wechat+d.Instagram);
+						 }else {
+							 return -yScale(d.Wechat+d.Instagram+d.Hupu+d.Alipay)+yScale(d.Wechat+d.Instagram+d.Hupu);
+						 }
+
+
+				   })
+
+					 .attr("width", xScale(1)-xScale(0))
+
+					 .attr("fill",function(d){
+						 if (d.Time<25){
+							 return "rgba(243,182,209,0.75)";
+						 } else if (d.Time <49){
+							 return "rgba(160,125,183,0.75)";
+						 }else if (d.Time <73){
+							 return "rgba(124,162,213,0.75)";
+						 }else  {
+							 return "rgba(173,217,195,0.75)";
+						 }
+					 })
+					.on("mouseover",function(d,i){
+				//		if(d.Time<25){
+							d3.select(this).attr("fill","white");
+						 showAmount();//show tooltip here
+				//		}
+
+			})
+					.on("mouseout",function(d,i){
+								d3.select(this).attr("fill",function(d){
+									if(d.Time<25){
+										return "rgba(243,182,209,0.75)";
+								}else if (d.Time<49){
+									return "rgba(160,125,183,0.75)";
+								}else if (d.Time <73){
+	 							 return "rgba(124,162,213,0.75)";
+	 						 }else  {
+								 return "rgba(173,217,195,0.75)";
+							 }
+							});
+								select("#tooltip").remove()//hide tooltip here
+							});
+
+
+/*					svg.selectAll("text")
+						.data(dataset)
+						.enter()
+						.append("text")
+						.text(function(d) {
+							return d.Amount;
+						})
+						.attr("x", function(d) {
+							 return xScale(d.Date)-5.5;
+						})
+						.attr("y", function(d) {
+							return yScale(d.Amount)-5;
+						})
+						.attr("font-family", "sans-serif")
+						.attr("font-size", "10px")
+						.attr("fill", "white"); */
+
+	   			//Create X axis
+	   			svg.append("g")
+	   				.attr("class", "axis")
+	   				.attr("transform", "translate(0," + (h - padding) + ")")
+	   				.call(xAxis);
+
+	   			//Create Y axis
+	   			svg.append("g")
+	   				.attr("class", "axis")
+	   				.attr("transform", "translate(" + padding + ",0)")
+	   				.call(yAxis);
+
+					svg.selectAll("circle")
+					   .enter()
+					   .append("circle")
+						 .attr("cx", "100")
+						 .attr("cy", "270")
+						 .attr("r", "50")
+						 .attr("fill", "rgba(243,182,209,0.75)");
+
+
+			});
+
+
+
+
+		</script>
+	</body>
+</html>

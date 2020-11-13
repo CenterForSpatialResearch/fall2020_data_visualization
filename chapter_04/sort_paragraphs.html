@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Page Template</title>
+        <script type="text/javascript" src="../d3.js"></script>
+        <style>
+          #income{
+            padding:5px;
+            border-radius:5px;
+            border:1px solid black;
+            width:100px;
+            cursor:pointer;
+          }
+          </style>
+    </head>
+    <body>
+     
+      <div id="income">income</div>
+      <div id="dropout">dropout</div>
+      
+      <div id="list">
+        array sorted here later
+      </div>
+      
+      
+        <script type="text/javascript">
+          var files = [d3.json("Borough Boundaries.geojson"),d3.csv("income_dropout.csv"),d3.csv("food.csv")]
+         Promise.all(files)
+          .then(function(data){
+            //code to use data
+            var boroughs = data[0]
+            var income = data[1]
+            var food = data[2]
+            
+            
+            
+            d3.select("#income")
+            .on("click",function(){
+              d3.select(this).style("background-color","green")
+              d3.selectAll("p").remove()
+              
+                var currentColumn = "median_income"
+                var sortedIncome = sortByIncome(income,currentColumn)
+                addToScreen(sortedIncome,currentColumn)
+            })
+            .on("mouseover",function(){
+              d3.select(this).style("background-color","red")
+            })
+            .on("mouseout",function(){
+              d3.select(this).style("background-color","white")
+            })
+            
+            
+            
+            d3.select("#dropout")
+            .on("click",function(){
+              d3.selectAll("p").remove()
+                var currentColumn = "dropout_rate"
+                var sortedIncome = sortByIncome(income,currentColumn)
+                addToScreen(sortedIncome,currentColumn)
+            })
+            
+            
+            
+          })
+          
+          function addToScreen(data,columnToDisplay){
+            d3.select("#list").selectAll("p")
+            .data(data)
+            .enter()
+            .append("p")
+            .text(function(d){
+              return d["Geo_QName"] + "   "+d[columnToDisplay]
+            })
+          }
+         
+          
+          function sortByIncome(data,columnToSortOn){
+            data.sort(function(a,b){
+              return parseFloat(a[columnToSortOn])-parseFloat(b[columnToSortOn])
+            })
+            return data
+          }
+          
+         
+        </script>
+    </body>
+</html>

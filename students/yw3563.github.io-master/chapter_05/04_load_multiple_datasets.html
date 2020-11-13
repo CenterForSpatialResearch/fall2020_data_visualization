@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Loading multiple datasets from separate files</title>
+        <script type="text/javascript" src="../d3.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+      var dataset1 = d3.csv("data/food.csv")
+      var dataset2 = d3.csv("data/density_income_ny_counties.csv")
+
+
+      Promise.all(
+        [dataset1,dataset2]
+      )
+      .then(function(data){
+        // data is now both datasets from your 2 files
+        console.log(data)
+        
+        //to get the first dataset - food.csv
+        console.log(data[0])
+        
+        //to get the second - density_income_ny_counties.csv
+        console.log(data[1])
+        
+      });
+
+
+		</script>
+	</body>
+</html>

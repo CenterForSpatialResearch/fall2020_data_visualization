@@ -129,25 +129,36 @@
 							return yScale(d);
 						});
 
+					var labels = svg.selectAll("text")			//Select all bars
+						.data(dataset);							//Re-bind data to existing bars, return the 'update' selection
 
+					labels.enter()								//References the enter selection (a subset of the update selection)
+						.append("text")							//Creates a new rect
+          
+   			   .attr("text-anchor", "middle")
+   			   .attr("x", function(d, i) {
+   			   		return xScale(i) + xScale.bandwidth() / 2;
+   			   })
+   			   .attr("y", function(d) {
+   			   		return h - yScale(d) + 14;
+   			   })
+						.merge(labels)							//Merges the enter selection with the update selection
+						.transition()							//Initiate a transition on all elements in the update selection (all rects)
+						.duration(500)
+            .text(function(d){
+              return d
+            })
+   			   .attr("text-anchor", "middle")
+   			   .attr("x", function(d, i) {
+   			   		return xScale(i) + xScale.bandwidth() / 2;
+   			   })
+   			   .attr("y", function(d) {
+   			   		return h - yScale(d) + 14;
+   			   })
 
-					//TODO: Update all labels
-					//
-					//Exercise: Modify this code to add a new label each time a new bar is added!
-					//
-					svg.selectAll("text")
-					   .data(dataset)
-					   .transition()
-					   .duration(500)
-					   .text(function(d) {
-					   		return d;
-					   })
-					   .attr("x", function(d, i) {
-							return xScale(i) + xScale.bandwidth() / 2;
-					   })
-					   .attr("y", function(d) {
-							return h - yScale(d) + 14;
-					   });
+			   .attr("font-family", "sans-serif")
+			   .attr("font-size", "11px")
+			   .attr("fill", "white")
 
 				});
 

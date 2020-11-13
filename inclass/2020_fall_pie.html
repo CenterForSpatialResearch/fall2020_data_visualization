@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <title>basic located</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    
+    
+    
+<script type="text/javascript" src="../d3.js"></script>
+  
+    
+    <style>
+      
+    </style>
+</head>
+<body>
+    
+</div>
+		<script type="text/javascript"> 
+            
+      
+
+        //this is what pie does to data
+   
+      
+    
+            //basic svg setup
+            var w = 500
+            var h = 500
+            var inner = 20//pie has no inner radius
+            var outer = 200
+        
+            var svg = d3.select("body").append("svg").attr("width",w).attr("height",h)
+            
+            
+      pieChart([1,2,3],svg,0,50,"in") 
+        pieChart([1,1,1,1,1,1,1],svg,50,100,"out")  
+            
+    function pieChart(arrayData,svg,inner,outer,className){            
+           //we don't need scales because it is always going to be percents.
+         
+        //define the pie layout this is just to use to make data into percents
+        var pie = d3.pie();
+        
+        
+        //define the arc
+        var arc = d3.arc().innerRadius(inner).outerRadius(outer)
+        
+        //if we want pie slices to be different colors, make a dictionary or array
+        var colors = ["#68b859","#cbcf49","#6c7c3f","#7fdf4a"]
+        
+        //Draw arcs
+        
+        var arcs = svg.selectAll("."+className)
+            .data(pie(arrayData))//this is the data, try console logging it to see pie in action see lines 45-47 above
+            .enter()
+            .append("g")
+            .attr("class", className)
+            .attr("transform", "translate(" + w/2+ "," + h/2 + ")")
+            .append("path")
+            .attr("fill", function(d, i) {
+            	return colors[i%colors.length]
+                //we have to do different colors, so use the index and mode to access a list of colors
+            })
+            .attr("d", arc)
+          
+            
+       
+        
+    }    
+
+</script>
+</body>
+</html>

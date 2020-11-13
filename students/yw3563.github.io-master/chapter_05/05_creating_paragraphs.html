@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Creating paragraphs dynamically from data</title>
+        <script type="text/javascript" src="../d3.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+		
+			var dataset = [ 5, 10, 15, 20, 25 ];
+			
+			d3.select("body").selectAll("p")
+				.data(dataset)//this attaches the dataset above
+				.enter()
+				.append("p")//for each item in the dataset above, a new paragraph is added to the page
+      .text("New paragraph!");//each new paragraph has the text "New paragraph!"
+			
+		</script>
+	</body>
+</html>

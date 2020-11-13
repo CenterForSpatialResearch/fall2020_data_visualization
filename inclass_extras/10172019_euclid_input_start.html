@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Euclid's Algorithm with Input</title>
+        <script src="../d3.js"></script>
+        <style>
+            /*put some styles here to make buttons and inputs more prominent*/
+        </style>
+	</head>
+	<body>     
+        put in 2 numbers
+        
+        
+        <div id="output">output</div>
+       <!--
+        TODO:
+               1. make a prompt that tells users what to do
+               2. make 2 text boxes for the 2 numbers users will input
+               3. make a button for users to click to check the numbers
+               4. validate numbers
+               5. calculate using euclide
+               6. display the output-->
+       
+     
+        <form id="form" onsubmit="return false;">
+            First Number: <input  type="text" id="firstNumber" class="inputBoxes" />
+            Second Number: <input  type="text" id="secondNumber"class="inputBoxes"  />            
+            <!--out check button-->
+            <input class="inputBoxes" type="submit" onclick="check();" />
+        </form>        
+        
+		<script type="text/javascript">
+            function check(){
+                var input1 = document.getElementById("firstNumber").value;
+                var input2 = document.getElementById("secondNumber").value;
+                
+                console.log([input1, input2])
+                if(input1=="" || input2==""){
+                    d3.select("#output").html("nothing was input")
+                }else if (isNaN(input1)==true || isNaN(input2)==true){
+                    d3.select("#output").html("has to be number")
+                }else{
+                    Euclid(input1,input2)
+                }
+            }
+            
+            
+                        
+            //this is our euclid function from before
+                var display = ""
+            function Euclid(a,b){
+                
+                
+                //first let's check which number is bigger
+                if(a>b){
+                    var ln = parseInt(a)
+                    var sn = parseInt(b)
+                }else if(a<b){
+                    var ln = parseInt(b)
+                    var sn = parseInt(a)
+                }else{
+                    console.log(a+" and "+b+" are the same and both divisible by "+a)
+                    return
+                }
+                
+                
+                
+                //now let's see if the larger is divisible by the smaller and get the remaider
+                var divisor = sn
+                var remainder = ln%divisor
+                //console.log("checking "+a+" and "+b+"..."+"the remainder is "+remainder)
+                
+                if(remainder==0){//if the remainder is 0, we are done
+                    display+=divisor+"<br>"
+                    console.log(divisor) 
+                    d3.select("#output").html(display)
+                                       
+                }else{//if it is not, we have to go through this whole thing again
+                    //this time the smaller number will be the remainder,
+                    //and the larger number the smaller number from before
+                    Euclid(remainder,sn)//this is a recursive function because it calls itself
+                }
+            }
+            
+     
+            
+            
+		</script>
+	</body>
+</html>

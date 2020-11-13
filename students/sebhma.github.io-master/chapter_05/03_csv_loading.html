@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Loading data from a CSV file</title>
+        <script type="text/javascript" src="../d3.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			d3.csv("data/food.csv") 
+      .then(function(data) {
+        // data is now whole data set from your food.csv file
+        
+        //this line below will print out the dataset into your developer console.
+				console.log(data);
+        //open food.csv in another window and you can see that it will match what is pointed in the developer console.
+
+        //it is a good idea sometimes to console log your data when you first load it to check that it is what you expect. 
+        //you would remove or comment out the cosole log line after - some browsers will not allow console log statements
+			
+        // now you can use your data to draw chart in here!
+        
+      })
+      .catch(function(error){
+           // handle error
+      })
+
+		</script>
+	</body>
+</html>

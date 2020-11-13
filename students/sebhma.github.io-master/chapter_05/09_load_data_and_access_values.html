@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Access data points from loaded file</title>
+        <script type="text/javascript" src="../d3.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+		
+			d3.csv("data/food.csv") 
+      .then(function(data) {
+
+  			d3.select("body").selectAll("p")
+  				.data(data)
+  				.enter()
+  				.append("p")
+  				.text(function(d) {
+            console.log(d)
+            //take a look at what has been logged above - objects with 2 key and value pairs
+            //the keys are Food, and Deliciousness
+            //the values are the name of the foods and their scores
+            
+            //to access the name of the food, we refer to the key "Food" 
+            //console.log(d.Food)
+            
+            //to access the deliciousness of the food we refer to the key "Deliciousness"
+            //we can access values with keys using 2 different syntaxes - these act the same in most cases
+            //d.Deliciousness
+            //and 
+            //d["Deliciousness"]
+            
+            //the 2 console log statements below will print out the same data
+            // console.log(d.Deliciousness)
+            //console.log(d["Deliciousness"])
+            
+            //to form as sentence using this data similar to the previous example:
+  					return d.Food + " has the deliciousness of "+ d.Deliciousness
+  				})
+      })
+      .catch(function(error){
+           // handle error
+      })
+
+			
+		</script>
+	</body>
+</html>

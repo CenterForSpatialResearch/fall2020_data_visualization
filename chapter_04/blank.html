@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Page Template</title>
+        <script type="text/javascript" src="../d3.js"></script>
+        <style>
+          #income{
+            padding:5px;
+            border-radius:5px;
+            border:1px solid black;
+            width:100px;
+            cursor:pointer;
+          }
+          </style>
+    </head>
+    <body>
+      
+      <div id="list">
+      </div>
+      
+      
+        <script type="text/javascript">
+          var files = [d3.csv("income_dropout.csv")]
+         Promise.all(files)
+          .then(function(data){
+           histogram(data[0])
+            
+          })
+          
+          function histogram(data){
+            console.log(data)
+            
+      var x = d3.scaleLinear()
+            .domain([0, 100000])
+            .range([0, 700]);
+            
+         var histogram = d3.histogram()
+              .value(function(d) { return parseInt(d["median_income"]); })
+            .thresholds(x.ticks(20)); // then the numbers of bins
+
+            
+            var bins = histogram(data);
+            console.log(bins)
+            
+          }
+         
+        </script>
+    </body>
+</html>

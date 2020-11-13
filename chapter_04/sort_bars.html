@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Page Template</title>
+        <script type="text/javascript" src="../d3.js"></script>
+        <style>
+          #income{
+            padding:5px;
+            border-radius:5px;
+            border:1px solid black;
+            width:100px;
+            cursor:pointer;
+          }
+          </style>
+    </head>
+    <body>
+      
+      <div id="list">
+      </div>
+      
+      
+        <script type="text/javascript">
+          var files = [d3.json("Borough Boundaries.geojson"),d3.csv("income_dropout.csv"),d3.csv("food.csv")]
+         Promise.all(files)
+          .then(function(data){
+            //code to use data
+            var boroughs = data[0]
+            var income = data[1]
+            var food = data[2]
+             var currentColumn = "dropout_rate"
+            var sortedIncome = sortByIncome(income,currentColumn)
+            addToScreen(sortedIncome,currentColumn)
+            
+          })
+          
+          function addToScreen(data,columnToDisplay){
+            var svg = d3.select("#list").append("svg").attr("width",1000).attr("height",100000)
+            
+            svg.selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("x",function(d,i){
+              return 0
+            })
+            .attr("y",function(d,i){
+              return i*10
+            })
+            .attr("height",function(d,i){
+              return 9
+            })
+            .attr("width",function(d,i){
+              return d[columnToDisplay]*100
+            })
+            
+  
+          }
+         
+          
+          function sortByIncome(data,columnToSortOn){
+            data.sort(function(a,b){
+              return parseFloat(a[columnToSortOn])-parseFloat(b[columnToSortOn])
+            })
+            return data
+          }
+          
+         
+        </script>
+    </body>
+</html>

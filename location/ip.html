@@ -25,16 +25,13 @@
        <script type="text/javascript">
      
          //TO GET THE USER'S IP ADDRESS AND LOCATION THROUGH IP
-           function getLocation() {
-                   var newDate = new Date();
-                   var entry = {time:newDate}
-               
+           function getLocation() {               
                    $.getJSON('https://geoip-db.com/json/')//this line alone gets the location
                             .done (function(location) {//this line indicates that once we have a response...
-                             // console.log(location)//check your developer console for all the things we get
+                              console.log(location)//check your developer console for all the things we get
                               
                               //the line below displays the info on our page
-                              d3.select("#location").html("Lng: "+location.longitude+"<br>Lat: "+location.latitude+"<br>Your IP Address: "+location.IPv4)
+d3.select("#location").html("Lng: "+location.longitude+"<br>Lat: "+location.latitude+"<br>Your IP Address: "+location.IPv4)
                             });
            }
            
