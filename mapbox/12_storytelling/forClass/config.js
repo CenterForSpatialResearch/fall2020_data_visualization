@@ -13,7 +13,7 @@ var config = {
             id: 'chapter1',
             title: 'Chapter 1',
             image: '',
-            description: '',
+            description: 'blah blah',
             location: {
                 center: [-75.13080, 39.97790],
                 zoom: 9.83,

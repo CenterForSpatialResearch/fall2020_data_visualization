@@ -1,0 +1,15 @@
+body{
+    padding:20px;
+    font-family:helvetica;    
+}
+#title{
+    font-size:18px;
+}
+#location{
+    padding:25px;
+    font-size:24px;
+}
+#map{
+    width:600px;
+    height:600px;
+}

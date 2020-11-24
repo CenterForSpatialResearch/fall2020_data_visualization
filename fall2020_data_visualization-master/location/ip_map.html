@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>test</title>
+        
+        <script src="js/d3.js"></script>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.serialize-object.js"></script>
+        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+        <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+        
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        
+    </head>
+    <body>
+
+    <div id="title">       
+        collecting location data from user demo<br>
+        below is your ip address and the location associated with it (no permission is needed to collect IP data)
+        <br/>
+    </div>
+       <div id="location"></div>
+       <div id="map"></div>
+        
+       
+       
+       <script type="text/javascript">
+     
+         //TO GET THE USER'S IP ADDRESS AND LOCATION THROUGH IP
+           function getLocation() {
+                   var newDate = new Date();
+                   var entry = {time:newDate}
+               
+                   $.getJSON('https://geoip-db.com/json/')//this line alone gets the location
+                            .done (function(location) {//this line indicates that once we have a response...
+                             // console.log(location)//check your developer console for all the things we get
+                              
+                              //the line below displays the info on our page
+                              d3.select("#location").html("Lng: "+location.longitude+"<br>Lat: "+location.latitude+"<br>Your IP Address: "+location.IPv4)
+                              
+                              drawMap(location.latitude,location.longitude)
+                              
+                           
+                            });
+           }
+           
+            getLocation()
+           
+           
+          function drawMap(lat,lng){
+             mapboxgl.accessToken = 'pk.eyJ1IjoiYzRzci1nc2FwcCIsImEiOiJja2J0ajRtNzMwOHBnMnNvNnM3Ymw5MnJzIn0.fsTNczOFZG8Ik3EtO9LdNQ';
+             var map = new mapboxgl.Map({
+               container: 'map',//thi sis the div that you have mad above in html that you are now placing your map in
+               style: 'mapbox://styles/c4sr-gsapp/ckfr5uab70xmq1ao6978altks',//you will find the accessToken under "Share" in your specific map in mapbox studio
+               center: [lng, lat],//the center of the map can be set to any initial value of [lng,lat]
+               zoom: 15//note that some layers have zoom limits - for example, streets and building footprints are not visible when zoomed out
+             });
+             
+             map.on('load', function() {
+                 map.loadImage('star.png', function(error, image) {
+                     if (error) throw error;
+                     map.addImage('star', image);
+                     map.addLayer({
+                         "id": "points",
+                         "type": "symbol",
+                         "source": {
+                             "type": "geojson",
+                             "data": {
+                                 "type": "FeatureCollection",
+                                 "features": [{
+                                         "type": "Feature",
+                                         "geometry": {
+                                             "type": "Point",
+                                             "coordinates": [lng,lat]
+                                         }
+                                     }]
+                                 }
+                             },
+                             "layout": {
+                             "icon-image": "star",
+                               "icon-size": 1
+                         }
+                     });
+                 });
+             });
+           }
+
+
+           
+           
+       </script>      
+    </body>
+</html>

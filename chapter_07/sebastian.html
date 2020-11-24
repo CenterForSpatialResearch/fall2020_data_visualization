@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Time scale</title>
+		<script type="text/javascript" src="../d3.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */		
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+            
+            //ASSIGNMENT: A new dataset was loaded here in this scatterplot called dataset_for_assignment
+            //this dataset contains all 4955 complaints made to 311 on labor day 9/2/2019
+            //this dataset has been formated by hour and count below in the function countHourOccurances
+            //Scales have already been created for you for x and y values
+            
+            //5 STEPS:
+            //Draw a scatterplot of this new data with the approperiate scale using the starter code below
+            //label each circle in the plot with the count for that hour
+            //Create a third scale for the radius of the scatterplot
+            //Scale each radius with what you created
+            //adjust the position of the labels.
+            
+            
+            //you will find that each small task is labeled with the words TODO:
+
+			var w = 800;
+			var h = 500;
+			var padding = 100;
+			
+			var dataset, xScale, yScale, rScale; 
+
+			var formatTime = d3.timeFormat("%H");
+
+			var rowConverter = function(d) {
+                var date = new Date(d["Created Date"])
+				return {
+					Hour: date.getHours(),
+				};
+			}
+            
+            
+            
+
+			d3.csv("Copy of assignment - Sheet1.csv")
+                .then(function(data) {
+        		var svg = d3.select("body")
+        					.append("svg")
+        					.attr("width", w)
+        					.attr("height", h);
+                  
+                  
+          			drawOnePerson(data[0])
+               })
+				
+function drawOnePerson(personData){
+  //here is the presonal data that has been cleaned up to have 24 hour clock, and also a name column header
+          //console.log(personData)
+
+
+  //here I am removing the name key, so that all that is left are the counts of texts
+          var keys = Object.keys(personData).sort()
+          keys.pop()
+
+          //console.log(keys)
+  
+  //x is the 24 hour clock
+          xScale = d3.scaleLinear()
+          			   .domain([1,24])
+          			   .range([padding, w - padding]);
+//y is the same for this person, you will have to put y in into for loop you will build to go through all persons
+          // yScale = d3.scaleLinear()
+//                    .domain([0,24])
+//                    .range([h - padding, padding]);
+  
+//r can be adjusted, it is set at 100 for now
+          rScale = d3.scaleLinear()
+          	           .domain([1,100])
+          			   .range([5,20]);
+
+//this draws the dots for each of the hours for this person          		
+var svg = d3.select("body svg")
+          		svg.selectAll("."+personData["name"])
+          		   .data(keys)
+          		   .enter()
+          		   .append("circle")
+                .attr("class",personData["name"])
+          		   .attr("cx", function(d){
+          			   return xScale(d);
+          		   })		   
+          		   .attr("cy", function(d,i) {
+                   //this will have to be changed for each person, you can try passing in the index from the loop for this value into the function as you loop through your data
+                   return 50
+          		   })
+          		   .attr("r", function(d){
+          			   return rScale(personData[d]);
+          		   });
+                 
+//this line below adds just the name label to the row
+                 svg.append("text").text(personData["name"]).attr('x',10).attr("y",55)
+}
+	
+		</script>
+	</body>
+</html>
